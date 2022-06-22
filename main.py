@@ -6,7 +6,6 @@ import streamlit as st
 
 import numpy as np
 import pandas as pd
-import pickle
 import io
 
 import plotly.express as px
@@ -141,8 +140,10 @@ def app():
     ALL_VARS = np.sort(df_deltas["VARIABLE"].unique())
 
     # Filtri sulle variabili
-    selected_variables = st.sidebar.multiselect('Selected variables:',ALL_VARS,ALL_VARS)
-    df_deltas = df_deltas[df_deltas["VARIABLE"].isin(selected_variables)]
+    # selected_variables = st.sidebar.multiselect('Selected variables:',ALL_VARS,ALL_VARS)
+    # df_deltas = df_deltas[df_deltas["VARIABLE"].isin(selected_variables)]
+    selected_variables = st.sidebar.text_input("Filter variable names").lower()
+    df_deltas = df_deltas[df_deltas["VARIABLE"].str.lower().str.contains(selected_variables)]
     filter_var_d = st.sidebar.text_input("Filter variables descriptions").lower()
     df_deltas = df_deltas[df_deltas["VARIABLE_CAPTION"].str.lower().str.contains(filter_var_d)]
     
