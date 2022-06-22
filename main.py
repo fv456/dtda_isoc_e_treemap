@@ -114,7 +114,7 @@ def app():
     
     year = st.sidebar.selectbox(
         "Year?",
-        [2020, 2021],
+        [2021, 2020],
         index=0
     )
 
