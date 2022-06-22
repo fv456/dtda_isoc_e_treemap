@@ -69,8 +69,8 @@ def st_create_download_btn(fig, btn_txt, html_name):
 @st.cache
 def get_countries_delta_data(country_B:str, year:int, delta_colname:str): # TODO: ristrutturare questa funzione
 
-    # Export to be used in `dtda_isoc_e_treemap`
-    # df = pd.read_pickle('data/ENT2-2009-2021-v220315.pickle')
+    # Original data must be filtered in order to fit memory
+    # Data comes from `dtd_analytics_desi/EuroStat/enterprises.ipynb` (dataset `ENT2-2009-2021-v220315`)
     # df.columns = ['VARIABLE', 'VARIABLE_CAPTION', 'UNIT', 'UNIT_CAPTION', 'YEAR', 'GEO', 'GEO_CAPTION_1', 'BREAKDOWN_TYPE', 'BREAKDOWN_CAPTION', 'VALUE', 'FLAGS', 'NOTES']
     # del df["GEO_CAPTION_1"], df["FLAGS"], df["NOTES"]
     # df = df[df["UNIT"] == "PC_ENT"]
