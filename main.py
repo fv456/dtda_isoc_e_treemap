@@ -136,7 +136,21 @@ def app():
     df_deltas = df_deltas.query(f"{COLNAME} <= {threshold_max} and {COLNAME} >= {threshold_min}")
 
     # Base per le variabili: tutte le disponibili nel dataset
-    ALL_VARS = np.sort(df_deltas["VARIABLE"].unique())
+    # ALL_VARS = np.sort(df_deltas["VARIABLE"].unique())
+
+
+    
+    # Filtri su categorie di variabili
+    st.sidebar.write("Variable categories")
+    ALL_VARS = pd.Series(df_deltas["VARIABLE"].unique()) 
+    SEL_VARS = []
+    if st.sidebar.checkbox("Big Data", True):
+        SEL_VARS = SEL_VARS + list(ALL_VARS[ALL_VARS.str.contains('bd')].values)
+    if st.sidebar.checkbox("All others", False):
+        SEL_VARS = SEL_VARS + list(ALL_VARS[~ALL_VARS.isin(SEL_VARS)].values)
+
+    df_deltas = df_deltas[df_deltas["VARIABLE"].isin(SEL_VARS)]
+
 
     # Filtri sulle variabili
     # selected_variables = st.sidebar.multiselect('Selected variables:',ALL_VARS,ALL_VARS)
@@ -158,12 +172,13 @@ def app():
     df_deltas = df_deltas[df_deltas["BREAKDOWN_CAPTION"].str.lower().str.contains(filter_brk_d)]
 
 
+
+    # --------------------------------------------------------------------------------
+
+
     # ---- MAIN PAGE START
     st.title('Digital skills')
     st.header('Comparison tool')
-
-
-    # --------------------------------------------------------------------------------
 
     if (len(df_deltas) == 0):
         st.markdown("WARNING: filter resulted in **NO DATA**.")
