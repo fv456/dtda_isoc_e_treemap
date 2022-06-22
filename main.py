@@ -47,11 +47,11 @@ EU_COUNTRIES = {
     "SE" : "Sweden",
 
     # Candidate countries - DSK are available as well
-    "ME" : "Montenegro (EU candidate)",
-    "MK" : "North Macedonia (EU candidate)",
-    "AL" : "Albania (EU candidate)",
-    "RS" : "Serbia (EU candidate)",
-    "TR" : "Turkey (EU candidate)"
+    # "ME" : "Montenegro (EU candidate)",
+    # "MK" : "North Macedonia (EU candidate)",
+    # "AL" : "Albania (EU candidate)",
+    # "RS" : "Serbia (EU candidate)",
+    # "TR" : "Turkey (EU candidate)"
 }
 
 def st_create_download_btn(fig, btn_txt, html_name):
