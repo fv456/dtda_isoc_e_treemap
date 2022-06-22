@@ -69,15 +69,16 @@ def st_create_download_btn(fig, btn_txt, html_name):
 @st.cache
 def get_countries_delta_data(country_B:str, year:int, delta_colname:str): # TODO: ristrutturare questa funzione
 
+    # Export to be used in `dtda_isoc_e_treemap`
     # df = pd.read_pickle('data/ENT2-2009-2021-v220315.pickle')
-    # df.columns = ['VARIABLE', 'VARIABLE_CAPTION', 'UNIT', 'UNIT_CAPTION',
-    #    'YEAR', 'GEO', 'GEO_CAPTION_1', 'BREAKDOWN_TYPE',
-    #    'BREAKDOWN_CAPTION', 'VALUE', 'FLAGS', 'NOTES']
+    # df.columns = ['VARIABLE', 'VARIABLE_CAPTION', 'UNIT', 'UNIT_CAPTION', 'YEAR', 'GEO', 'GEO_CAPTION_1', 'BREAKDOWN_TYPE', 'BREAKDOWN_CAPTION', 'VALUE', 'FLAGS', 'NOTES']
     # del df["GEO_CAPTION_1"], df["FLAGS"], df["NOTES"]
     # df = df[df["UNIT"] == "PC_ENT"]
     # df["VALUE"] = df["VALUE"] * 100.0
     # df["VAR_AND_BRK"] = df["VARIABLE"] + "-" + df["BREAKDOWN_TYPE"]
-    # df.to_pickle('data/ENT2-2009-2021-v220315-filtered.pickle')
+    # df = df.dropna()
+    # df = df[df["YEAR"].isin([2020,2021])]
+    # df.to_pickle(f"{SURVEY_PATH}/cached/ENT2-2009-2021-v220315-filtered.pickle")
 
     df = pd.read_pickle('data/ENT2-2009-2021-v220315-filtered.pickle')
 
@@ -110,7 +111,7 @@ def app():
     
     year = st.sidebar.selectbox(
         "Year?",
-        [2019, 2020, 2021],
+        [2020, 2021],
         index=0
     )
 
@@ -192,7 +193,7 @@ def app():
     st.plotly_chart(fig, use_container_width=True)
     st_create_download_btn(fig, 'Download filtered treemap BRK->VAR above (HTML file)', 'eurostat_dsk_brk_var_treemap.html')
     
-    print("Eurostat DSK navigation page loaded.")
+    print("Eurostat ENT navigation page loaded.")
     
 
 # %% Exec with file
