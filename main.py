@@ -179,7 +179,7 @@ def app():
                      title=f"Variable -> breakdown combinations",
                      range_color=[-v_max_range, v_max_range]) # per ottenere range simmetrico (bianco sullo zero)
     st.plotly_chart(fig, use_container_width=True)
-    st_create_download_btn(fig, 'Download filtered treemap VAR->BRK above (HTML file)', 'eurostat_dsk_var_brk_treemap.html')
+    st_create_download_btn(fig, 'Download filtered treemap VAR->BRK above (HTML file)', 'eurostat_ent_var_brk_treemap.html')
 
 
     fig = px.treemap(df_deltas,
@@ -191,7 +191,7 @@ def app():
                      title=f"Breakdown -> variable combinations",
                      range_color=[-v_max_range, v_max_range]) # per ottenere range simmetrico (bianco sullo zero)
     st.plotly_chart(fig, use_container_width=True)
-    st_create_download_btn(fig, 'Download filtered treemap BRK->VAR above (HTML file)', 'eurostat_dsk_brk_var_treemap.html')
+    st_create_download_btn(fig, 'Download filtered treemap BRK->VAR above (HTML file)', 'eurostat_ent_brk_var_treemap.html')
     
     print("Eurostat ENT navigation page loaded.")
     
