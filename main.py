@@ -78,6 +78,9 @@ def get_countries_delta_data(country_B:str, year:int, delta_colname:str): # TODO
     # df["VAR_AND_BRK"] = df["VARIABLE"] + "-" + df["BREAKDOWN_TYPE"]
     # df = df.dropna()
     # df = df[df["YEAR"].isin([2020,2021])]
+    # eu_countries = ["AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","EL","HU","IE","IT","LV","LT","LU","MT","NL","PL","RO","RO","SK","SI","ES","SE"]
+    # countries = eu_countries+["ME","MK","AL","RS","TR"]
+    # df = df[df["GEO"].isin(eu_countries)]
     # df.to_pickle(f"{SURVEY_PATH}/cached/ENT2-2009-2021-v220315-filtered.pickle")
 
     df = pd.read_pickle('data/ENT2-2009-2021-v220315-filtered.pickle')
@@ -138,15 +141,17 @@ def app():
 
     # Base per le variabili: tutte le disponibili nel dataset
     # ALL_VARS = np.sort(df_deltas["VARIABLE"].unique())
-
-
     
     # Filtri su categorie di variabili
     st.sidebar.write("Variable categories")
     ALL_VARS = pd.Series(df_deltas["VARIABLE"].unique()) 
     SEL_VARS = []
+    if st.sidebar.checkbox("Artificial Intelligence", True):
+        SEL_VARS = SEL_VARS + list(ALL_VARS[ALL_VARS.str.upper().str.contains('AI')].values)
     if st.sidebar.checkbox("Big Data", True):
-        SEL_VARS = SEL_VARS + list(ALL_VARS[ALL_VARS.str.contains('bd')].values)
+        SEL_VARS = SEL_VARS + list(ALL_VARS[ALL_VARS.str.upper().str.contains('BD')].values)
+    if st.sidebar.checkbox("Cloud Computing", True):
+        SEL_VARS = SEL_VARS + list(ALL_VARS[ALL_VARS.str.upper().str.contains('CC')].values)
     if st.sidebar.checkbox("All others", False):
         SEL_VARS = SEL_VARS + list(ALL_VARS[~ALL_VARS.isin(SEL_VARS)].values)
 
