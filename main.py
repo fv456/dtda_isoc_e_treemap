@@ -74,6 +74,7 @@ def get_countries_delta_data(country_B:str, year:int, delta_colname:str): # TODO
     # df.columns = ['VARIABLE', 'VARIABLE_CAPTION', 'UNIT', 'UNIT_CAPTION', 'YEAR', 'GEO', 'GEO_CAPTION_1', 'BREAKDOWN_TYPE', 'BREAKDOWN_CAPTION', 'VALUE', 'FLAGS', 'NOTES']
     # del df["GEO_CAPTION_1"], df["FLAGS"], df["NOTES"]
     # df = df[df["UNIT"] == "PC_ENT"]
+    # del df["UNIT"], df["UNIT_CAPTION"]
     # df["VALUE"] = df["VALUE"] * 100.0
     # df["VAR_AND_BRK"] = df["VARIABLE"] + "-" + df["BREAKDOWN_TYPE"]
     # df = df.dropna()
