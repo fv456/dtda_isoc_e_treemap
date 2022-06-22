@@ -81,7 +81,6 @@ def get_countries_delta_data(country_B:str, year:int, delta_colname:str): # TODO
 
     df = pd.read_pickle('data/ENT2-2009-2021-v220315-filtered.pickle')
 
-
     df_ita_YY = df.query(f"YEAR=={year} and GEO=='IT'")[["VAR_AND_BRK", "VALUE"]]
     df_ita_YY.columns = ["VAR_AND_BRK","VAL_IT"]
 
@@ -139,18 +138,6 @@ def app():
     # Base per le variabili: tutte le disponibili nel dataset
     ALL_VARS = np.sort(df_deltas["VARIABLE"].unique())
 
-    # Tipo delle variabili: sorgente base, DSK calcolate, oppure entrambe?
-    variables_type = st.sidebar.radio(
-        "Select variable type:",
-        ('All', 'Source', 'Calculated'),
-        index=1)
-    temp = pd.Series(ALL_VARS)
-    if variables_type == "Source":
-        ALL_VARS = temp[~temp.str.contains("_DSK")]
-    elif variables_type == "Calculated":
-        ALL_VARS = temp[temp.str.contains("_DSK")]
-    del temp
-
     # Filtri sulle variabili
     selected_variables = st.sidebar.multiselect('Selected variables:',ALL_VARS,ALL_VARS)
     df_deltas = df_deltas[df_deltas["VARIABLE"].isin(selected_variables)]
@@ -172,9 +159,6 @@ def app():
     # ---- MAIN PAGE START
     st.title('Digital skills')
     st.header('Comparison tool')
-    # st.write('Source table link: http://appsso.eurostat.ec.europa.eu/nui/show.do?dataset=isoc_bde15cua&lang=en')
-    # st.subheader('Microdati originati dal questionario Aspetti della Vita Quotidiana') # tutti??
-    # st.subheader('Dati già filtrati per popolazione 16-74, come da metodo Eurostat')  # CHECK !
 
 
     # --------------------------------------------------------------------------------
