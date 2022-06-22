@@ -146,14 +146,21 @@ def app():
     st.sidebar.write("Variable categories")
     ALL_VARS = pd.Series(df_deltas["VARIABLE"].unique()) 
     SEL_VARS = []
+    # `list(set(...))` to avoid duplicates
     if st.sidebar.checkbox("Artificial Intelligence", True):
-        SEL_VARS = SEL_VARS + list(ALL_VARS[ALL_VARS.str.upper().str.contains('AI')].values)
+        SEL_VARS = list(set(SEL_VARS + list(ALL_VARS[ALL_VARS.str.upper().str.contains('AI')].values)))
     if st.sidebar.checkbox("Big Data", True):
-        SEL_VARS = SEL_VARS + list(ALL_VARS[ALL_VARS.str.upper().str.contains('BD')].values)
+        SEL_VARS = list(set(SEL_VARS + list(ALL_VARS[ALL_VARS.str.upper().str.contains('BD')].values)))
     if st.sidebar.checkbox("Cloud Computing", True):
-        SEL_VARS = SEL_VARS + list(ALL_VARS[ALL_VARS.str.upper().str.contains('CC')].values)
-    if st.sidebar.checkbox("All others", False):
-        SEL_VARS = SEL_VARS + list(ALL_VARS[~ALL_VARS.isin(SEL_VARS)].values)
+        SEL_VARS = list(set(SEL_VARS + list(ALL_VARS[ALL_VARS.str.upper().str.contains('CC')].values)))
+    if st.sidebar.checkbox("Cyber Security", True):
+        SEL_VARS = list(set(SEL_VARS + list(ALL_VARS[ALL_VARS.str.upper().str.contains('SEC')].values)))
+    if st.sidebar.checkbox("Enterprise Website", True):
+        SEL_VARS = list(set(SEL_VARS + list(ALL_VARS[ALL_VARS.str.upper().str.contains('WEB')].values)))
+    if st.sidebar.checkbox("Internet of Things", True):
+        SEL_VARS = list(set(SEL_VARS + list(ALL_VARS[ALL_VARS.str.upper().str.contains('IOT')].values)))
+    if st.sidebar.checkbox("All others (longer loading time)", False):
+        SEL_VARS = list(set(SEL_VARS + list(ALL_VARS[~ALL_VARS.isin(SEL_VARS)].values)))
 
     df_deltas = df_deltas[df_deltas["VARIABLE"].isin(SEL_VARS)]
 
