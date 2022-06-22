@@ -78,7 +78,7 @@ def get_countries_delta_data(country_B:str, year:int, delta_colname:str): # TODO
     # df["VAR_AND_BRK"] = df["VARIABLE"] + "-" + df["BREAKDOWN_TYPE"]
     # df = df.dropna()
     # df = df[df["YEAR"].isin([2020,2021])]
-    # eu_countries = ["AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","EL","HU","IE","IT","LV","LT","LU","MT","NL","PL","RO","RO","SK","SI","ES","SE"]
+    # eu_countries = ["EU27_2020","AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","EL","HU","IE","IT","LV","LT","LU","MT","NL","PL","RO","RO","SK","SI","ES","SE"]
     # countries = eu_countries+["ME","MK","AL","RS","TR"]
     # df = df[df["GEO"].isin(eu_countries)]
     # df.to_pickle(f"{SURVEY_PATH}/cached/ENT2-2009-2021-v220315-filtered.pickle")
