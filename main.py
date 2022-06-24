@@ -124,6 +124,13 @@ def app():
         index=0, # 27,
         format_func=lambda id: EU_COUNTRIES[id]
     )
+
+    treemap_style = st.sidebar.radio(
+        "Treemap style", 
+        ("VAR -> BRKDWN", "BRKDWN -> VAR"),
+        index=0
+    )
+
     if country == "EU":
         country = "EU27_2020"
 
@@ -164,7 +171,6 @@ def app():
 
     df_deltas = df_deltas[df_deltas["VARIABLE"].isin(SEL_VARS)]
 
-
     # Filtri sulle variabili
     # selected_variables = st.sidebar.multiselect('Selected variables:',ALL_VARS,ALL_VARS)
     # df_deltas = df_deltas[df_deltas["VARIABLE"].isin(selected_variables)]
@@ -184,8 +190,6 @@ def app():
     filter_brk_d = st.sidebar.text_input("Filter breakdowns descriptions").lower()
     df_deltas = df_deltas[df_deltas["BREAKDOWN_CAPTION"].str.lower().str.contains(filter_brk_d)]
 
-
-
     # --------------------------------------------------------------------------------
 
 
@@ -198,29 +202,28 @@ def app():
         st.write()
         return
 
-
-    fig = px.treemap(df_deltas,
-                     path=[px.Constant("EUROSTAT"), 'VARIABLE', 'BREAKDOWN_TYPE'],
-                     values=px.Constant(1), #values='pop',
-                     color=COLNAME, hover_data=['VARIABLE_CAPTION', 'BREAKDOWN_CAPTION'],
-                     color_continuous_scale='RdBu',
-                     height=600,
-                     title=f"Variable -> breakdown combinations",
-                     range_color=[-v_max_range, v_max_range]) # per ottenere range simmetrico (bianco sullo zero)
-    st.plotly_chart(fig, use_container_width=True)
-    st_create_download_btn(fig, 'Download filtered treemap VAR->BRK above (HTML file)', 'eurostat_ent_var_brk_treemap.html')
-
-
-    fig = px.treemap(df_deltas,
-                     path=[px.Constant("EUROSTAT"), 'BREAKDOWN_TYPE', 'VARIABLE'],
-                     values=px.Constant(1), #values='pop',
-                     color=COLNAME, hover_data=['VARIABLE_CAPTION', 'BREAKDOWN_CAPTION'],
-                     color_continuous_scale='RdBu',
-                     height=700,
-                     title=f"Breakdown -> variable combinations",
-                     range_color=[-v_max_range, v_max_range]) # per ottenere range simmetrico (bianco sullo zero)
-    st.plotly_chart(fig, use_container_width=True)
-    st_create_download_btn(fig, 'Download filtered treemap BRK->VAR above (HTML file)', 'eurostat_ent_brk_var_treemap.html')
+    if treemap_style == "VAR -> BRKDWN":
+        fig = px.treemap(df_deltas,
+                        path=[px.Constant("EUROSTAT"), 'VARIABLE', 'BREAKDOWN_TYPE'],
+                        values=px.Constant(1), #values='pop',
+                        color=COLNAME, hover_data=['VARIABLE_CAPTION', 'BREAKDOWN_CAPTION'],
+                        color_continuous_scale='RdBu',
+                        height=600,
+                        title=f"Variable -> breakdown combinations",
+                        range_color=[-v_max_range, v_max_range]) # per ottenere range simmetrico (bianco sullo zero)
+        st.plotly_chart(fig, use_container_width=True)
+        st_create_download_btn(fig, 'Download filtered treemap VAR->BRK above (HTML file)', 'eurostat_ent_var_brk_treemap.html')
+    else:
+        fig = px.treemap(df_deltas,
+                        path=[px.Constant("EUROSTAT"), 'BREAKDOWN_TYPE', 'VARIABLE'],
+                        values=px.Constant(1), #values='pop',
+                        color=COLNAME, hover_data=['VARIABLE_CAPTION', 'BREAKDOWN_CAPTION'],
+                        color_continuous_scale='RdBu',
+                        height=700,
+                        title=f"Breakdown -> variable combinations",
+                        range_color=[-v_max_range, v_max_range]) # per ottenere range simmetrico (bianco sullo zero)
+        st.plotly_chart(fig, use_container_width=True)
+        st_create_download_btn(fig, 'Download filtered treemap BRK->VAR above (HTML file)', 'eurostat_ent_brk_var_treemap.html')
     
     print("Eurostat ENT navigation page loaded.")
     
