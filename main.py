@@ -54,16 +54,16 @@ EU_COUNTRIES = {
     # "TR" : "Turkey (EU candidate)"
 }
 
-def st_create_download_btn(fig, btn_txt, html_name):
-    buffer = io.StringIO()
-    fig.write_html(buffer, include_plotlyjs='cdn')
-    html_bytes = buffer.getvalue().encode()
-    st.download_button(
-        label=btn_txt,
-        data=html_bytes,
-        file_name=html_name,
-        mime='text/html'
-    )
+def st_create_download_btn(parent, fig, btn_txt, html_name):
+    with io.StringIO() as buffer:
+        fig.write_html(buffer, include_plotlyjs='cdn')
+        html_bytes = buffer.getvalue().encode()
+        parent.download_button(
+            label=btn_txt,
+            data=html_bytes,
+            file_name=html_name,
+            mime='text/html'
+        )
 
 @st.cache
 def get_countries_delta_data(country_B:str, year:int, delta_colname:str): # TODO: ristrutturare questa funzione
@@ -225,7 +225,10 @@ def app():
                         title=f"Variable -> breakdown combinations",
                         range_color=[-v_max_range, v_max_range]) # per ottenere range simmetrico (bianco sullo zero)
         st.plotly_chart(fig, use_container_width=True)
-        st_create_download_btn(fig, 'Download filtered treemap VAR->BRK above (HTML file)', 'eurostat_ent_var_brk_treemap.html')
+        
+        dwnld_button = st.empty()
+        if dwnld_button.button("Prepare download filtered treemap VAR->BRK above (HTML file)"):
+            st_create_download_btn(dwnld_button, fig, 'Download', 'eurostat_ent_var_brk_treemap.html')
     else:
         fig = px.treemap(df_deltas,
                         path=[px.Constant("EUROSTAT"), 'BREAKDOWN_TYPE', 'VARIABLE'],
@@ -236,7 +239,10 @@ def app():
                         title=f"Breakdown -> variable combinations",
                         range_color=[-v_max_range, v_max_range]) # per ottenere range simmetrico (bianco sullo zero)
         st.plotly_chart(fig, use_container_width=True)
-        st_create_download_btn(fig, 'Download filtered treemap BRK->VAR above (HTML file)', 'eurostat_ent_brk_var_treemap.html')
+        
+        dwnld_button = st.empty()
+        if dwnld_button.button("Prepare download filtered treemap BRK->VAR above (HTML file)"):
+            st_create_download_btn(dwnld_button, fig, 'Download', 'eurostat_ent_brk_var_treemap.html')
     logging.info("...treemap computed.")
 
     logging.info("...main page loaded.")
