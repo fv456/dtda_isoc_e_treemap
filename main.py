@@ -67,7 +67,6 @@ def st_create_download_btn(fig, btn_txt, html_name):
 
 @st.cache
 def get_countries_delta_data(country_B:str, year:int, delta_colname:str): # TODO: ristrutturare questa funzione
-
     # Original data must be filtered in order to fit memory
     # Data comes from `dtd_analytics_desi/EuroStat/enterprises.ipynb` (dataset `ENT2-2009-2021-v220315`)
     # df.columns = ['VARIABLE', 'VARIABLE_CAPTION', 'UNIT', 'UNIT_CAPTION', 'YEAR', 'GEO', 'GEO_CAPTION_1', 'BREAKDOWN_TYPE', 'BREAKDOWN_CAPTION', 'VALUE', 'FLAGS', 'NOTES']
@@ -106,12 +105,12 @@ def get_countries_delta_data(country_B:str, year:int, delta_colname:str): # TODO
         "VARIABLE_CAPTION", 
         "BREAKDOWN_CAPTION", "VARIABLE", "BREAKDOWN_TYPE"]].drop_duplicates()
     df_deltas = pd.merge(df_deltas, df_temp, on="VAR_AND_BRK")
-
+    
     return df_deltas
 
 
 def app():
-    
+    logging.info("Sidebar loading...")
     year = st.sidebar.selectbox(
         "Year?",
         [2021, 2020],
@@ -135,7 +134,9 @@ def app():
         country = "EU27_2020"
 
     COLNAME = f"DELTA_{country}"
+    logging.info("Data loading...")
     df_deltas = get_countries_delta_data(country, year, COLNAME)
+    logging.info("...data loaded.")
 
     # Filtraggi sulle soglie dei valori di confronto
     v_max_range = max(abs(df_deltas[COLNAME]))
@@ -169,6 +170,15 @@ def app():
     if st.sidebar.checkbox("All others (longer loading time)", False):
         SEL_VARS = list(set(SEL_VARS + list(ALL_VARS[~ALL_VARS.isin(SEL_VARS)].values)))
 
+    exclude_negative_vars = st.sidebar.radio(
+        "Exclude negative vars ('Don't ...')", 
+        ("True", "False"),
+        index=0
+    )
+
+    if exclude_negative_vars == "True":
+        SEL_VARS = [v for v in SEL_VARS if v.upper()[-1]!="X"]
+
     df_deltas = df_deltas[df_deltas["VARIABLE"].isin(SEL_VARS)]
 
     # Filtri sulle variabili
@@ -190,10 +200,12 @@ def app():
     filter_brk_d = st.sidebar.text_input("Filter breakdowns descriptions").lower()
     df_deltas = df_deltas[df_deltas["BREAKDOWN_CAPTION"].str.lower().str.contains(filter_brk_d)]
 
+    logging.info("...sidebar loaded.")
     # --------------------------------------------------------------------------------
 
 
     # ---- MAIN PAGE START
+    logging.info("Main page loading...")
     st.title('Digital skills')
     st.header('Comparison tool')
 
@@ -201,7 +213,8 @@ def app():
         st.markdown("WARNING: filter resulted in **NO DATA**.")
         st.write()
         return
-
+    
+    logging.info("Computing treemap...")
     if treemap_style == "VAR -> BRKDWN":
         fig = px.treemap(df_deltas,
                         path=[px.Constant("EUROSTAT"), 'VARIABLE', 'BREAKDOWN_TYPE'],
@@ -224,13 +237,15 @@ def app():
                         range_color=[-v_max_range, v_max_range]) # per ottenere range simmetrico (bianco sullo zero)
         st.plotly_chart(fig, use_container_width=True)
         st_create_download_btn(fig, 'Download filtered treemap BRK->VAR above (HTML file)', 'eurostat_ent_brk_var_treemap.html')
-    
-    logging.info("Eurostat ENT navigation page loaded.")
+    logging.info("...treemap computed.")
+
+    logging.info("...main page loaded.")
     
 
 # %% Exec with file
 if __name__ == "__main__":
-    logging.info("Eurostat data navigation app, executed as main")
+    logging.info("App loading...")
     st.set_page_config(layout="wide")
     app()
+    logging.info("...app loaded.")
 
