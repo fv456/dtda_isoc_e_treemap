@@ -171,7 +171,7 @@ def app():
         SEL_VARS = list(set(SEL_VARS + list(ALL_VARS[~ALL_VARS.isin(SEL_VARS)].values)))
 
     exclude_negative_vars = st.sidebar.radio(
-        "Exclude negative vars ('Don't ...')", 
+        "Exclude negative vars (i.e.: 'Don't ...')?", 
         ("True", "False"),
         index=0
     )
