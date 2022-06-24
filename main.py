@@ -2,8 +2,8 @@
 """
 @author: fv456
 """
+import logging
 import streamlit as st
-
 import numpy as np
 import pandas as pd
 import io
@@ -225,12 +225,12 @@ def app():
         st.plotly_chart(fig, use_container_width=True)
         st_create_download_btn(fig, 'Download filtered treemap BRK->VAR above (HTML file)', 'eurostat_ent_brk_var_treemap.html')
     
-    print("Eurostat ENT navigation page loaded.")
+    logging.info("Eurostat ENT navigation page loaded.")
     
 
 # %% Exec with file
 if __name__ == "__main__":
-    print("Eurostat data navigation app, executed as main")
+    logging.info("Eurostat data navigation app, executed as main")
     st.set_page_config(layout="wide")
     app()
 
