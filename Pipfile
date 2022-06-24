@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-streamlit = "==1.9.2"
+streamlit = "==1.10.0"
 numpy = "*"
 pandas = "==1.4.2"
 plotly = "==5.5.0"
