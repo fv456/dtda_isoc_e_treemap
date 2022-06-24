@@ -9,9 +9,9 @@ numpy = "*"
 pandas = "==1.4.2"
 plotly = "==5.9.0"
 # protobuf = "~=3.19.0"
+watchdog = "*"
 
 [dev-packages]
-watchdog = "*"
 
 [requires]
 python_version = "3.9"
