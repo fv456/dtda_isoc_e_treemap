@@ -208,7 +208,7 @@ def app():
     logging.info("Main page loading...")
     st.title('ICT usage in enterprises')
     st.header('Comparison tool')
-    st.write('Eurostat data')
+    # st.write('Eurostat data')
 
     if (len(df_deltas) == 0):
         st.markdown("WARNING: filter resulted in **NO DATA**.")
