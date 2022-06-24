@@ -221,7 +221,7 @@ def app():
                         values=px.Constant(1), #values='pop',
                         color=COLNAME, hover_data=['VARIABLE_CAPTION', 'BREAKDOWN_CAPTION'],
                         color_continuous_scale='RdBu',
-                        height=600,
+                        height=750,
                         title=f"Variable -> breakdown combinations",
                         range_color=[-v_max_range, v_max_range]) # per ottenere range simmetrico (bianco sullo zero)
         st.plotly_chart(fig, use_container_width=True)
@@ -235,7 +235,7 @@ def app():
                         values=px.Constant(1), #values='pop',
                         color=COLNAME, hover_data=['VARIABLE_CAPTION', 'BREAKDOWN_CAPTION'],
                         color_continuous_scale='RdBu',
-                        height=700,
+                        height=750,
                         title=f"Breakdown -> variable combinations",
                         range_color=[-v_max_range, v_max_range]) # per ottenere range simmetrico (bianco sullo zero)
         st.plotly_chart(fig, use_container_width=True)
