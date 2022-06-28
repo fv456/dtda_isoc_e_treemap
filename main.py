@@ -67,22 +67,8 @@ def st_create_download_btn(parent, fig, btn_txt, html_name):
 
 @st.cache
 def get_countries_delta_data(country_B:str, year:int, delta_colname:str): # TODO: ristrutturare questa funzione
-    # Original data must be filtered in order to fit memory
-    # Data comes from `dtd_analytics_desi/EuroStat/enterprises.ipynb` (dataset `ENT2-2009-2021-v220315`)
-    # df.columns = ['VARIABLE', 'VARIABLE_CAPTION', 'UNIT', 'UNIT_CAPTION', 'YEAR', 'GEO', 'GEO_CAPTION_1', 'BREAKDOWN_TYPE', 'BREAKDOWN_CAPTION', 'VALUE', 'FLAGS', 'NOTES']
-    # del df["GEO_CAPTION_1"], df["FLAGS"], df["NOTES"]
-    # df = df[df["UNIT"] == "PC_ENT"]
-    # del df["UNIT"], df["UNIT_CAPTION"]
-    # df["VALUE"] = df["VALUE"] * 100.0
-    # df["VAR_AND_BRK"] = df["VARIABLE"] + "-" + df["BREAKDOWN_TYPE"]
-    # df = df.dropna()
-    # df = df[df["YEAR"].isin([2020,2021])]
-    # eu_countries = ["EU27_2020","AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","EL","HU","IE","IT","LV","LT","LU","MT","NL","PL","RO","RO","SK","SI","ES","SE"]
-    # countries = eu_countries+["ME","MK","AL","RS","TR"]
-    # df = df[df["GEO"].isin(eu_countries)]
-    # df.to_pickle(f"{SURVEY_PATH}/cached/ENT2-2009-2021-v220315-filtered.pickle")
-
-    df = pd.read_pickle('data/ENT2-2009-2021-v220315-filtered.pickle')
+    # Data comes from `dtd_analytics_desi/EuroStat/enterprises-treemap.ipynb` (dataset `ENT2-2009-2021-v220315`)
+    df = pd.read_pickle('data/ENT2-2009-2021-v220315-filtered+gdp.pickle').rename(columns={"GDP":"NACE_GDP"})
 
     df_ita_YY = df.query(f"YEAR=={year} and GEO=='IT'")[["VAR_AND_BRK", "VALUE"]]
     df_ita_YY.columns = ["VAR_AND_BRK","VAL_IT"]
@@ -100,10 +86,11 @@ def get_countries_delta_data(country_B:str, year:int, delta_colname:str): # TODO
 
     df_deltas = df_deltas.sort_values(delta_colname)
     df_deltas = df_deltas.dropna()
-    df_temp = df[["VAR_AND_BRK", 
+    df_temp = df.query(f"YEAR=={year} and GEO=='IT'")[["VAR_AND_BRK", 
         # "CAPTION_ALL", 
         "VARIABLE_CAPTION", 
-        "BREAKDOWN_CAPTION", "VARIABLE", "BREAKDOWN_TYPE"]].drop_duplicates()
+        "BREAKDOWN_CAPTION", "VARIABLE", "BREAKDOWN_TYPE", "NACE_CAPTION", "NACE_GDP"]].drop_duplicates()
+    df_temp["NACE_GDP"] = df_temp["NACE_GDP"].round(2).astype(str) + "%"
     df_deltas = pd.merge(df_deltas, df_temp, on="VAR_AND_BRK")
     
     return df_deltas
@@ -218,13 +205,13 @@ def app():
     logging.info("Computing treemap...")
     if treemap_style == "VAR -> BRKDWN":
         fig = px.treemap(df_deltas,
-                        path=[px.Constant("EUROSTAT"), 'VARIABLE', 'BREAKDOWN_TYPE'],
-                        values=px.Constant(1), #values='pop',
-                        color=COLNAME, hover_data=['VARIABLE_CAPTION', 'BREAKDOWN_CAPTION'],
-                        color_continuous_scale='RdBu',
-                        height=750,
-                        title=f"Variable -> breakdown combinations",
-                        range_color=[-v_max_range, v_max_range]) # per ottenere range simmetrico (bianco sullo zero)
+                         path=[px.Constant("EUROSTAT"), 'VARIABLE', 'BREAKDOWN_TYPE'],
+                         values=px.Constant(1), #values='pop',
+                         color=COLNAME, hover_data=['VARIABLE_CAPTION', 'BREAKDOWN_CAPTION', "NACE_CAPTION", "NACE_GDP"],
+                         color_continuous_scale='RdBu',
+                         height=750,
+                         title=f"Variable -> breakdown combinations",
+                         range_color=[-v_max_range, v_max_range]) # per ottenere range simmetrico (bianco sullo zero)
         st.plotly_chart(fig, use_container_width=True)
         
         dwnld_button = st.empty()
@@ -232,13 +219,13 @@ def app():
             st_create_download_btn(dwnld_button, fig, 'Download', 'eurostat_ent_var_brk_treemap.html')
     else:
         fig = px.treemap(df_deltas,
-                        path=[px.Constant("EUROSTAT"), 'BREAKDOWN_TYPE', 'VARIABLE'],
-                        values=px.Constant(1), #values='pop',
-                        color=COLNAME, hover_data=['VARIABLE_CAPTION', 'BREAKDOWN_CAPTION'],
-                        color_continuous_scale='RdBu',
-                        height=750,
-                        title=f"Breakdown -> variable combinations",
-                        range_color=[-v_max_range, v_max_range]) # per ottenere range simmetrico (bianco sullo zero)
+                         path=[px.Constant("EUROSTAT"), 'BREAKDOWN_TYPE', 'VARIABLE'],
+                         values=px.Constant(1), #values='pop',
+                         color=COLNAME, hover_data=['VARIABLE_CAPTION', 'BREAKDOWN_CAPTION', "NACE_CAPTION", "NACE_GDP"],
+                         color_continuous_scale='RdBu',
+                         height=750,
+                         title=f"Breakdown -> variable combinations",
+                         range_color=[-v_max_range, v_max_range]) # per ottenere range simmetrico (bianco sullo zero)
         st.plotly_chart(fig, use_container_width=True)
         
         dwnld_button = st.empty()
