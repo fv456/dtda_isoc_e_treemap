@@ -12,6 +12,7 @@ plotly = "==5.9.0"
 watchdog = "*"
 
 [dev-packages]
+black = "*"
 
 [requires]
 python_version = "3.9"
